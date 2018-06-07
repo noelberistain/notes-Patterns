@@ -1,0 +1,55 @@
+body {
+    font-size: 16px;
+    color: black;
+}
+
+#container {
+    background-color: mediumpurple;
+    border: 1px dotted black;
+    display: flex;
+    flex-flow: row wrap;
+    height: auto;
+    width: 972px;
+}
+
+.mainNote {
+    background-color: tan;
+    border: 2px dotted black;
+    height: 300px;
+    margin: 5px;
+    padding: 5px;
+    width: 300px;
+}
+
+.innerText {
+    background-color: lightgoldenrodyellow;
+    outline-color: red;
+    resize: none;
+    width: 100%;
+    height: 84%;
+}
+
+i.fa-save {
+    width: 5%;
+    float: right;
+}
+
+i.updated {
+    width: 100%;
+    height: .7em;
+    padding: 0% 2%;
+    font-size: .7em;
+}
+
+span {
+    float: right;
+}
+
+span.created {
+    width: 50%;
+    font-size: .7em;
+}
+
+span.key {
+    display: none;
+}
