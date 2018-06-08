@@ -47,8 +47,7 @@ inputSearch.addEventListener("input", function (e) {
                 notes[index].parentNode.style.display = "block";
             }
         }
-    }, 500);
-    
+    }, 700);
 });
 
 (function createNote(temp1) {
