@@ -29,21 +29,26 @@ function showNotes(temp1, num, crtd, updtd, txt) {
     container.appendChild(fragment);
 }
 
+var timerId;
 var inputSearch = document.getElementById("inputSearch");
-inputSearch.addEventListener("keyup", function (e) {
+inputSearch.addEventListener("input", function (e) {
     var searchingText = e.target.value;
-    var notes = document.getElementsByTagName("textarea");
-    for (var index = 0; index < notes.length; index++) {
-        console.log(searchingText)
-        if ((notes[index].textContent).indexOf(searchingText) === -1) {
-            console.dir(notes[index].parentElement)
-            notes[index].parentElement.style.display = "none";
+    clearTimeout(timerId);
+    timerId = setTimeout(function () {
+        var notes = document.getElementsByTagName("textarea");
+        for (var index = 0; index < notes.length; index++) {
+            console.log(searchingText)
+            if ((notes[index].textContent).indexOf(searchingText) === -1) {
+                console.dir(notes[index].parentElement)
+                notes[index].parentElement.style.display = "none";
+            }
+            else {
+                console.dir(notes[index].parentNode)
+                notes[index].parentNode.style.display = "block";
+            }
         }
-        else {
-            console.dir(notes[index].parentNode)
-            notes[index].parentNode.style.display = "block";
-        }
-    }
+    }, 500);
+    
 });
 
 (function createNote(temp1) {
@@ -95,7 +100,6 @@ container.addEventListener("click", function (event) {
             iUpdated.innerText = '';
         }
         if (noteExist(spanKey)) {
-
             notes[noteExist(spanKey)].textarea = textarea.value;
             notes[noteExist(spanKey)].dateModified = dateModified;
             iUpdated.appendChild(document.createTextNode(dateModified));
