@@ -1,5 +1,3 @@
-
-
 var fragment, temp1, dateCreated = '', dateModified = '';
 fragment = document.createDocumentFragment();
 temp1 = document.getElementsByTagName("template")[0];
@@ -31,6 +29,23 @@ function showNotes(temp1, num, crtd, updtd, txt) {
     container.appendChild(fragment);
 }
 
+var inputSearch = document.getElementById("inputSearch");
+inputSearch.addEventListener("keyup", function (e) {
+    var searchingText = e.target.value;
+    var notes = document.getElementsByTagName("textarea");
+    for (var index = 0; index < notes.length; index++) {
+        console.log(searchingText)
+        if ((notes[index].textContent).indexOf(searchingText) === -1) {
+            console.dir(notes[index].parentElement)
+            notes[index].parentElement.style.display = "none";
+        }
+        else {
+            console.dir(notes[index].parentNode)
+            notes[index].parentNode.style.display = "block";
+        }
+    }
+});
+
 (function createNote(temp1) {
     btnCreate = document.getElementById("btn");
     btnCreate.addEventListener("click", function () {
@@ -59,7 +74,7 @@ container.addEventListener("click", function (event) {
             notes.splice(noteExist(spanKey), 1);
             localStorage.setItem("notes", JSON.stringify(notes));
         }
-        
+
         container.removeChild(event.target.parentNode);
     }
 
