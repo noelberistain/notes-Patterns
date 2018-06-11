@@ -1,10 +1,9 @@
-var fragment, temp1, dateCreated = '', dateModified = '';
-fragment = document.createDocumentFragment();
-temp1 = document.getElementsByTagName("template")[0];
+var dateCreated = '', dateModified = '';
+var fragment = document.createDocumentFragment();
+var temp1 = document.getElementsByTagName("template")[0];
 var container = document.getElementById("container");
-var notes = localStorage.getItem("notes");
-notes = notes ? JSON.parse(notes) : [];
-
+// var notes = localStorage.getItem("notes");                          //moved to MODEL
+// notes = notes ? JSON.parse(notes) : [];                             //moved to MODEL
 if (notes.length > 0) {
     for (var key in notes) {
         showNotes(temp1,
@@ -75,8 +74,9 @@ container.addEventListener("click", function (event) {
     //if i press the "TRASH" little icon(top-left)
     if (attributeName === "trash") {
         if (noteExist(spanKey)) {
-            notes.splice(noteExist(spanKey), 1);
-            localStorage.setItem("notes", JSON.stringify(notes));
+            deleteNote(noteExist(spanKey));
+            // notes.splice(noteExist(spanKey), 1);                                 //moved to MODEL
+            // localStorage.setItem("notes", JSON.stringify(notes));                //moved to MODEL
         }
 
         container.removeChild(event.target.parentNode);
@@ -99,10 +99,11 @@ container.addEventListener("click", function (event) {
             iUpdated.innerText = '';
         }
         if (noteExist(spanKey)) {
-            notes[noteExist(spanKey)].textarea = textarea.value;
-            notes[noteExist(spanKey)].dateModified = dateModified;
+            updateNote(noteExist(spanKey), dateModified, textarea.value)
+            // notes[noteExist(spanKey)].textarea = textarea.value;             //moved to MODEL
+            // notes[noteExist(spanKey)].dateModified = dateModified;           //moved to MODEL
             iUpdated.appendChild(document.createTextNode(dateModified));
-            localStorage.setItem("notes", JSON.stringify(notes));
+            // localStorage.setItem("notes", JSON.stringify(notes));            //moved to MODEL
         }
         else {
             textNode = document.createTextNode(textarea.value);
@@ -112,8 +113,9 @@ container.addEventListener("click", function (event) {
             noteContent.textarea = textarea.value;
             iUpdated.appendChild(document.createTextNode(dateModified));
             noteContent.dateModified = iUpdated.innerText;
-            notes.push(noteContent);
-            localStorage.setItem("notes", JSON.stringify(notes));
+            createNote(noteContent);
+            // notes.push(noteContent);                                     // moved to MODEL
+            // localStorage.setItem("notes", JSON.stringify(notes));        // moved to MODEL
         }
     }
 });
@@ -141,7 +143,7 @@ function getDate() {
         segs = '0' + segs;
     }
     time = upDate.getHours() + ":" + mins + ":" + segs;
-    date = upDate.getFullYear() + "/" + upDate.getMonth() + "/" + upDate.getDate();
+    date = upDate.getFullYear() + "/" + (upDate.getMonth() + 1) + "/" + upDate.getDate();
     return date + " - " + time;
 }
 function enableText(b) {
