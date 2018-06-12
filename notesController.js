@@ -72,7 +72,6 @@ container.addEventListener("click", function (event) {
         if (noteExist(spanKey)) {
             deleteNote(noteExist(spanKey));
         }
-
         container.removeChild(event.target.parentNode);
     }
 
@@ -138,7 +137,6 @@ function getDate() {
 function enableText(b) {
     b.disabled = !b.disabled || false || b.setAttribute("style", "disable = false");
     b.focus();
-    // b.preventDefault();
 }
 function disableText(b) {
     b.disabled = true;
