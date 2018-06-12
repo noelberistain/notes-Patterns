@@ -2,19 +2,15 @@ var dateCreated = '', dateModified = '';
 var fragment = document.createDocumentFragment();
 var temp1 = document.getElementsByTagName("template")[0];
 var container = document.getElementById("container");
-// var notes = localStorage.getItem("notes");                          //moved to MODEL
-// notes = notes ? JSON.parse(notes) : [];                             //moved to MODEL
+
 if (notes.length > 0) {
     for (var key in notes) {
-        showNotes(temp1,
-            notes[key].key,
-            notes[key].dateCreated,
-            notes[key].dateModified,
-            notes[key].textarea);
+        var note = displayExistentNotes(key);
+        showNotes(note.key, note.dateCreated, note.dateModified, note.textarea);
     }
 }
 
-function showNotes(temp1, num, crtd, updtd, txt) {
+function showNotes(num, crtd, updtd, txt) {
     var clon = temp1.content.cloneNode(true);
     fragment.appendChild(clon);
     var keyNote = fragment.querySelector(".key");
@@ -75,8 +71,6 @@ container.addEventListener("click", function (event) {
     if (attributeName === "trash") {
         if (noteExist(spanKey)) {
             deleteNote(noteExist(spanKey));
-            // notes.splice(noteExist(spanKey), 1);                                 //moved to MODEL
-            // localStorage.setItem("notes", JSON.stringify(notes));                //moved to MODEL
         }
 
         container.removeChild(event.target.parentNode);
@@ -100,10 +94,7 @@ container.addEventListener("click", function (event) {
         }
         if (noteExist(spanKey)) {
             updateNote(noteExist(spanKey), dateModified, textarea.value)
-            // notes[noteExist(spanKey)].textarea = textarea.value;             //moved to MODEL
-            // notes[noteExist(spanKey)].dateModified = dateModified;           //moved to MODEL
             iUpdated.appendChild(document.createTextNode(dateModified));
-            // localStorage.setItem("notes", JSON.stringify(notes));            //moved to MODEL
         }
         else {
             textNode = document.createTextNode(textarea.value);
@@ -114,8 +105,6 @@ container.addEventListener("click", function (event) {
             iUpdated.appendChild(document.createTextNode(dateModified));
             noteContent.dateModified = iUpdated.innerText;
             createNote(noteContent);
-            // notes.push(noteContent);                                     // moved to MODEL
-            // localStorage.setItem("notes", JSON.stringify(notes));        // moved to MODEL
         }
     }
 });

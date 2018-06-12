@@ -1,7 +1,7 @@
 var notes = localStorage.getItem("notes");
 notes = notes ? JSON.parse(notes) : [];
 
-function saveNotes(wholeNotes){
+function saveNotes(wholeNotes) {
     localStorage.setItem("notes", JSON.stringify(wholeNotes));
 }
 
@@ -21,6 +21,11 @@ function updateNote(index, date, text) {
     saveNotes(notes);
 }
 
-function showExistentNotes() {
-
+function displayExistentNotes(key) {
+    return {
+        "key": notes[key].key,
+        "dateCreated": notes[key].dateCreated,
+        "dateModified": notes[key].dateModified,
+        "textarea": notes[key].textarea
+    };
 }
