@@ -27,6 +27,15 @@ body {
     float: right;
 }
 
+
+.innerText {
+    background-color: lightgoldenrodyellow;
+    outline-color: red;
+    resize: none;
+    width: 100%;
+    height: 84%;
+}
+
 .mainNote {
     background-color: tan;
     border: 2px dotted black;
@@ -36,12 +45,12 @@ body {
     width: 300px;
 }
 
-.innerText {
-    background-color: lightgoldenrodyellow;
-    outline-color: red;
-    resize: none;
-    width: 100%;
-    height: 84%;
+.hold {
+    border: solid lightgray 4px;
+}
+
+.hovered{
+    border: solid  lightgray 8px;
 }
 
 i.fa-save {

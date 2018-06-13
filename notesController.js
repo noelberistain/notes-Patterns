@@ -1,7 +1,8 @@
 var dateCreated = '', dateModified = '';
 var fragment = document.createDocumentFragment();
 var temp1 = document.getElementsByTagName("template")[0];
-var container = document.getElementById("container");
+var allNotes = document.getElementsByClassName("mainNote");
+var movingElem, originKey, destKey, key;
 
 if (notes.length > 0) {
     for (var key in notes) {
@@ -25,25 +26,21 @@ function showNotes(num, crtd, updtd, txt) {
 }
 
 var timerId;
-var inputSearch = document.getElementById("inputSearch");
-inputSearch.addEventListener("input", function (e) {
+function search(e) {
     var searchingText = e.target.value;
     clearTimeout(timerId);
     timerId = setTimeout(function () {
         var notes = document.getElementsByTagName("textarea");
         for (var index = 0; index < notes.length; index++) {
-            console.log(searchingText)
             if ((notes[index].textContent).indexOf(searchingText) === -1) {
-                console.dir(notes[index].parentElement)
                 notes[index].parentElement.style.display = "none";
             }
             else {
-                console.dir(notes[index].parentNode)
-                notes[index].parentNode.style.display = "block";
+                notes[index].parentNode.style.display = "inline-block";
             }
         }
     }, 700);
-});
+};
 
 (function createNote(temp1) {
     btnCreate = document.getElementById("btn");
@@ -55,10 +52,11 @@ inputSearch.addEventListener("input", function (e) {
         span.appendChild(dateCreated);
         var textarea = fragment.querySelector(".innerText");
         container.appendChild(fragment);
+        saveNotes(notes);
     });
 })(temp1);
 
-container.addEventListener("click", function (event) {
+function actions(event) {
     var textNode = '', attributeName = event.target.getAttribute("name");
     var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
     var mainNote = event.target.parentNode;
@@ -106,7 +104,7 @@ container.addEventListener("click", function (event) {
             createNote(noteContent);
         }
     }
-});
+};
 
 function noteExist(a) {
     for (var i in notes) {
@@ -115,10 +113,12 @@ function noteExist(a) {
         }
     }
 }
+
 function setKey() {
     var update = new Date();
     return update.getMilliseconds();
 }
+
 function getDate() {
     var upDate, mins, secs, time, date;
     upDate = new Date();
@@ -134,10 +134,59 @@ function getDate() {
     date = upDate.getFullYear() + "/" + (upDate.getMonth() + 1) + "/" + upDate.getDate();
     return date + " - " + time;
 }
+
 function enableText(b) {
-    b.disabled = !b.disabled || false || b.setAttribute("style", "disable = false");
+    b.disabled = false;
     b.focus();
 }
+
 function disableText(b) {
     b.disabled = true;
+}
+
+function dragStart(elem) {
+    movingElem = elem;
+    key = movingElem.querySelector(".key").innerText;
+    originKey = noteExist(key);
+    elem.className += " hold";
+    elem.setAttribute("ondragend", "dragEnd(this)");
+}
+
+function dragEnd(elem) {
+    elem.className = "mainNote";
+    elem.removeAttribute("ondragend");
+
+}
+
+//loop through all notes and adding drag events
+for (var key of allNotes) {
+    key.addEventListener('dragover', dragOver);
+    key.addEventListener('dragenter', dragEnter);
+    key.addEventListener('dragleave', dragLeave);
+    key.addEventListener('drop', dragDrop);
+}
+
+function switchNotes(origin, dest) {
+    var aux = notes[origin];
+    notes[origin] = notes[dest];
+    notes[dest] = aux;
+    saveNotes(notes);
+}
+
+function dragOver(e) {
+    e.preventDefault();
+}
+function dragEnter(e) {
+    e.preventDefault();
+    this.className += " hovered";
+}
+function dragLeave() {
+    this.className = "mainNote";
+}
+function dragDrop(e) {
+    this.className = "mainNote";
+    key = this.querySelector(".key").innerText;
+    destKey = noteExist(key);
+    switchNotes(originKey, destKey);
+    window.location.reload();
 }
