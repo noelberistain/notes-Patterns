@@ -2,7 +2,7 @@ var dateCreated = '', dateModified = '';
 var fragment = document.createDocumentFragment();
 var temp1 = document.getElementsByTagName("template")[0];
 var allNotes = document.getElementsByClassName("mainNote");
-var movingElem, originKey, destKey, key;
+var movingElem, newPlace, originKey, destKey, key;
 
 if (notes.length > 0) {
     for (var key in notes) {
@@ -47,12 +47,15 @@ function search(e) {
     btnCreate.addEventListener("click", function () {
         var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
+        var main = fragment.querySelector(".mainNote");
+        main.setAttribute("style","order : 1");
+        var key = fragment.querySelector(".key");
+        key.appendChild(document.createTextNode(setKey()));
         var span = fragment.querySelector(".created");
         var dateCreated = document.createTextNode(getDate());
         span.appendChild(dateCreated);
         var textarea = fragment.querySelector(".innerText");
         container.appendChild(fragment);
-        saveNotes(notes);
     });
 })(temp1);
 
@@ -72,7 +75,6 @@ function actions(event) {
         }
         container.removeChild(event.target.parentNode);
     }
-
     // if i CLICK on edit button
     if (attributeName === "edit") { //if I click the textarea element which is disabled by default
         if (textarea.disabled) {
@@ -96,7 +98,7 @@ function actions(event) {
         else {
             textNode = document.createTextNode(textarea.value);
             textarea.appendChild(textNode);
-            noteContent.key = setKey();
+            noteContent.key = spanKey;
             noteContent.dateCreated = iCreated.innerText;
             noteContent.textarea = textarea.value;
             iUpdated.appendChild(document.createTextNode(dateModified));
@@ -148,22 +150,32 @@ function dragStart(elem) {
     movingElem = elem;
     key = movingElem.querySelector(".key").innerText;
     originKey = noteExist(key);
-    elem.className += " hold";
-    elem.setAttribute("ondragend", "dragEnd(this)");
+    movingElem.className += " hold";
+    movingElem.setAttribute("ondragend", "dragEnd(this)");
+    movingElem.setAttribute("ondragleave", "dragLeave(this)");
 }
 
-function dragEnd(elem) {
-    elem.className = "mainNote";
-    elem.removeAttribute("ondragend");
+function dragEnd(e) {
 
+    movingElem.style.order = parseInt(originKey)+1; 
+    newPlace.style.order = parseInt(destKey)+1;
+    if(originKey !== destKey){
+        switchNotes(originKey, destKey);
+    }
+
+    e.className = "mainNote";
+    e.removeAttribute("ondragend");
+    e.removeAttribute("ondragleave");
 }
 
-//loop through all notes and adding drag events
-for (var key of allNotes) {
-    key.addEventListener('dragover', dragOver);
-    key.addEventListener('dragenter', dragEnter);
-    key.addEventListener('dragleave', dragLeave);
-    key.addEventListener('drop', dragDrop);
+function dragEnter(elem) {
+    newPlace = elem;
+    key = newPlace.querySelector(".key").innerText;
+    destKey = noteExist(key);
+    newPlace.className += " hovered";
+}
+function dragLeave(e) {
+    e.className = "mainNote";
 }
 
 function switchNotes(origin, dest) {
@@ -172,21 +184,14 @@ function switchNotes(origin, dest) {
     notes[dest] = aux;
     saveNotes(notes);
 }
-
-function dragOver(e) {
-    e.preventDefault();
-}
-function dragEnter(e) {
-    e.preventDefault();
-    this.className += " hovered";
-}
-function dragLeave() {
-    this.className = "mainNote";
-}
-function dragDrop(e) {
-    this.className = "mainNote";
-    key = this.querySelector(".key").innerText;
-    destKey = noteExist(key);
-    switchNotes(originKey, destKey);
-    window.location.reload();
-}
+// function dragDrop(e) {
+    // if(e.target.className === "innerText"){
+    //     var mainNote = e.target.parentElement;
+    // }else{
+    //     mainNote = e.target;
+    // }
+    // mainNote.className = "mainNote";
+    // key = mainNote.querySelector(".key").innerText;
+    // destKey = noteExist(key);
+    // switchNotes(originKey, destKey);
+// }
