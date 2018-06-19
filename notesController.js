@@ -2,16 +2,17 @@ var dateCreated = '', dateModified = '';
 var fragment = document.createDocumentFragment();
 var temp1 = document.getElementsByTagName("template")[0];
 var allNotes = document.getElementsByClassName("mainNote");
-var movingElem, newPlace, originKey, destKey, key;
+var movingElem, newPlace, movingElemOrder, newPlaceOrder, originKey, destKey, key, order=0;
 
 if (notes.length > 0) {
     for (var key in notes) {
         var note = displayExistentNotes(key);
-        showNotes(note.key, note.dateCreated, note.dateModified, note.textarea);
+        showNotes(key, note.key, note.dateCreated, note.dateModified, note.textarea);
     }
 }
 
-function showNotes(num, crtd, updtd, txt) {
+function showNotes(index, num, crtd, updtd, txt) {
+    order = (parseInt(index)+1);
     var clon = temp1.content.cloneNode(true);
     fragment.appendChild(clon);
     var keyNote = fragment.querySelector(".key");
@@ -22,6 +23,8 @@ function showNotes(num, crtd, updtd, txt) {
     updated.innerText = updtd;
     var textarea = fragment.querySelector(".innerText");
     textarea.innerText = txt;
+    var note = fragment.querySelector(".mainNote");
+    note.setAttribute("style","order:" + order);
     container.appendChild(fragment);
 }
 
@@ -48,7 +51,7 @@ function search(e) {
         var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
         var main = fragment.querySelector(".mainNote");
-        main.setAttribute("style","order : 1");
+        main.setAttribute("style","order:" + ++order);
         var key = fragment.querySelector(".key");
         key.appendChild(document.createTextNode(setKey()));
         var span = fragment.querySelector(".created");
@@ -152,20 +155,20 @@ function dragStart(elem) {
     originKey = noteExist(key);
     movingElem.className += " hold";
     movingElem.setAttribute("ondragend", "dragEnd(this)");
-    movingElem.setAttribute("ondragleave", "dragLeave(this)");
 }
 
-function dragEnd(e) {
-
-    movingElem.style.order = parseInt(originKey)+1; 
-    newPlace.style.order = parseInt(destKey)+1;
+function dragEnd() {
+    movingElemOrder = movingElem.getAttribute("style")[6];
+    newPlaceOrder = newPlace.getAttribute("style")[6];
+    movingElem.setAttribute("style","order:"+newPlaceOrder);
+    newPlace.setAttribute("style","order:"+movingElemOrder);
     if(originKey !== destKey){
         switchNotes(originKey, destKey);
     }
 
-    e.className = "mainNote";
-    e.removeAttribute("ondragend");
-    e.removeAttribute("ondragleave");
+    newPlace.className = "mainNote";
+    newPlace.removeAttribute("ondragend");
+    movingElem.removeAttribute("ondragend");
 }
 
 function dragEnter(elem) {
@@ -177,21 +180,3 @@ function dragEnter(elem) {
 function dragLeave(e) {
     e.className = "mainNote";
 }
-
-function switchNotes(origin, dest) {
-    var aux = notes[origin];
-    notes[origin] = notes[dest];
-    notes[dest] = aux;
-    saveNotes(notes);
-}
-// function dragDrop(e) {
-    // if(e.target.className === "innerText"){
-    //     var mainNote = e.target.parentElement;
-    // }else{
-    //     mainNote = e.target;
-    // }
-    // mainNote.className = "mainNote";
-    // key = mainNote.querySelector(".key").innerText;
-    // destKey = noteExist(key);
-    // switchNotes(originKey, destKey);
-// }

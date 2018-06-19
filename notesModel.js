@@ -29,3 +29,10 @@ function displayExistentNotes(key) {
         "textarea": notes[key].textarea
     };
 }
+
+function switchNotes(origin, dest) {
+    var aux = notes[origin];
+    notes[origin] = notes[dest];
+    notes[dest] = aux;
+    saveNotes(notes);
+}
