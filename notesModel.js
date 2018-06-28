@@ -30,9 +30,9 @@ function displayExistentNotes(key) {
     };
 }
 
-function switchNotes(origin, dest) {
-    var aux = notes[origin];
-    notes[origin] = notes[dest];
-    notes[dest] = aux;
-    saveNotes(notes);
-}
+// function switchNotes(origin, dest) {
+//     var aux = notes[origin];
+//     notes[origin] = notes[dest];
+//     notes[dest] = aux;
+//     saveNotes(notes);
+// }
