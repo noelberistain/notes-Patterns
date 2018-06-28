@@ -8,12 +8,14 @@ inputSearch.addEventListener("input", search);
 var container = document.getElementById("container");
 container.addEventListener("click", actions);
 
+var notes = model.getNotes();
 if (notes.length > 0) {
     for (var key in notes) {
-        var note = displayExistentNotes(key);
+        var note = model.displayExistentNotes(key);
         showNotes(key, note.key, note.dateCreated, note.dateModified, note.textarea);
     }
 }
+
 function showNotes(index, num, crtd, updtd, txt) {
     order = parseInt(index);
     var clon = temp1.content.cloneNode(true);
@@ -35,7 +37,6 @@ function showNotes(index, num, crtd, updtd, txt) {
 function newNote(template) {
     var btnCreate = getThisElement("btn");//document.getElementById("btn");
     btnCreate.addEventListener("click", function createNew() {
-        console.log(arguments);
         var clon = template.content.cloneNode(true);
         fragment.appendChild(clon);
         var main = fragment.querySelector(".mainNote");
@@ -79,7 +80,7 @@ function actions(event) {
     //if i press the "TRASH" little icon(top-left)
     if (noteInfo.attributeName === "trash") {
         if (noteExist(noteInfo.spanKey)) {
-            deleteNote(noteExist(noteInfo.spanKey));
+            model.deleteNote(noteExist(noteInfo.spanKey));
         }
         container.removeChild(event.target.parentNode);
     }
@@ -100,7 +101,7 @@ function actions(event) {
             noteInfo.iUpdated.innerText = '';
         }
         if (noteExist(noteInfo.spanKey)) {
-            updateNote(noteExist(noteInfo.spanKey), dateModified, noteInfo.textarea.value)
+            model.updateNote(noteExist(noteInfo.spanKey), dateModified, noteInfo.textarea.value)
             noteInfo.iUpdated.appendChild(document.createTextNode(dateModified));
         }
         else {
@@ -111,7 +112,7 @@ function actions(event) {
             noteContent.textarea = noteInfo.textarea.value;
             noteInfo.iUpdated.appendChild(document.createTextNode(dateModified));
             noteContent.dateModified = noteInfo.iUpdated.innerText;
-            createNote(noteContent);
+            model.createNote(noteContent);
         }
     }
 };
