@@ -1,3 +1,3 @@
 (function init (){
-    newNote(temp1);
+    view.newNote();
 })();

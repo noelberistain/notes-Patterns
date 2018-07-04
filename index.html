@@ -19,7 +19,7 @@
 
     <div id="container">
         <template>
-            <div class="mainNote"  draggable="true" ondragstart="dragStart(this)" ondragenter="dragEnter(this)" ondragleave="dragLeave(this)">
+            <div class="mainNote"  draggable="true" ondragstart="view.dragStart(this)" ondragenter="view.dragEnter(this)" ondragleave="view.dragLeave(this)">
                 <i class="fa fa-trash" name="trash"></i>
                 <span class="key"></span>
                 <span class="created"></span>
@@ -30,6 +30,7 @@
             </div>
         </template>
     </div>
+
     <script src="notesModel.js"></script>
     <script src="notesController.js"></script>
     <script src="notesView.js"></script>
