@@ -15,14 +15,22 @@ var Model = function () {
     };
 
     return {
-        lastChange: function(note){
-            model.updateNote(note.index, note.date, note.lastText);
-            view.updateNote(note.date,note.lastText,note.order, note.key);
+        unDrag: function (data) {
+            var orders = notes.map(function (element) {
+                return data.array[element.key]
+            },data.array.map(function (note){ return data.array[note.key] = note.ord }));
+            console.log(orders);
+            view.assignNewOrders(orders);
         },
-        
-        showNotes : function(note){
+
+        lastChange: function (note) {
+            model.updateNote(note.index, note.date, note.lastText);
+            view.updateNote(note.date, note.lastText, note.order, note.key);
+        },
+
+        showNotes: function (note) {
             console.log(note)
-            notes.splice(+note.ord,0,note)
+            notes.splice(+note.ord, 0, note)
             this.saveNotes(notes);
             view.showNotes(note);
         },
@@ -32,6 +40,7 @@ var Model = function () {
             this.deleteNote(index)
             view.deleteUndo(key);
         },
+
         undo: function () {
             history.undo();
         },
@@ -47,22 +56,27 @@ var Model = function () {
         getNotes: function () {
             return notes;
         },
+
         saveNotes: function (wholeNotes) {
             localStorage.setItem("notes", JSON.stringify(wholeNotes));
         },
+
         createNote: function (content) {
             notes.push(content);
             this.saveNotes(notes);
         },
+
         deleteNote: function (index) {
             notes.splice(index, 1);
             this.saveNotes(notes);
         },
+
         updateNote: function (index, date, text) {
             notes[index].textarea = text;
             notes[index].dateModified = date;
             this.saveNotes(notes);
         },
+
         displayExistentNotes: function (key) { //key => index
             return {
                 "key": notes[key].key,

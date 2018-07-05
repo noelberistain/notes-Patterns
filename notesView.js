@@ -1,7 +1,7 @@
 var aRDom = function () {
     // var dateCreated = '', dateModified = '';
 
-    var lastNoteContent, movingElem, newPlace, movingElemOrder, newPlaceOrder, key, order = 0; //originIndex, destIndex,
+    var lastNoteContent, movingElem, newPlace, movingElemOrder, newPlaceOrder, key, change, order = 0; //originIndex, destIndex,
     var notes = model.getNotes();
     var fragment = document.createDocumentFragment();
     var temp1 = document.getElementsByTagName("template")[0];
@@ -15,7 +15,7 @@ var aRDom = function () {
         var indexFromDB = controller.noteExist(noteInfo.spanKey);
         if (noteInfo.attributeName === "trash") {
             if (indexFromDB) {
-                var change = {
+                change = {
                     undo: "showNotes",
                     data: notes[indexFromDB]
                 }
@@ -42,14 +42,14 @@ var aRDom = function () {
                 noteInfo.iUpdated.innerText = '';
             }
             if (indexFromDB) {
-                var change = {
+                change = {
                     undo: "lastChange",
                     data: {
-                        key : noteInfo.spanKey,
+                        key: noteInfo.spanKey,
                         index: indexFromDB,
-                        order : noteInfo.ord,
-                        date : lastDate,
-                        lastText : lastNoteContent,
+                        order: noteInfo.ord,
+                        date: lastDate,
+                        lastText: lastNoteContent,
                     }
                 };
                 model.addRegister(change);
@@ -66,7 +66,7 @@ var aRDom = function () {
                 noteInfo.iUpdated.appendChild(document.createTextNode(dateModified));
                 noteContent.dateModified = noteInfo.iUpdated.innerText;
                 model.createNote(noteContent);
-                var change = {
+                change = {
                     undo: 'deleteUndo',
                     data: controller.noteExist(noteInfo.spanKey)
                 }
@@ -105,25 +105,24 @@ var aRDom = function () {
 
     document.addEventListener("keydown", function (ev) {
         if (ev.key == "z" && ev.ctrlKey)
-        ev.preventDefault();
+            ev.preventDefault();
     })
-    
+
     document.addEventListener("keyup", function (ev) {
         if (ev.key == "z" && ev.ctrlKey) {
             model.undo();
         }
     })
-    
-    notesBackUp = notes;
+
     return {
-        updateNote : function (upDate, text, order, key) {
-            var noteDom  = container.querySelector("[key='" + key + "']");
+        updateNote: function (upDate, text, order, key) {
+            var noteDom = container.querySelector("[key='" + key + "']");
             noteDom.style.order = order;
             noteDom.querySelector(".innerText").value = text;
             noteDom.querySelector(".updated").textContent = upDate;
         },
         showNotes: function (note) {
-            showNotes(note.ord, note.key, note.dateCreated,note.dateModified, note.textarea);
+            showNotes(note.ord, note.key, note.dateCreated, note.dateModified, note.textarea);
         },
         deleteUndo: function (key) {
             container.removeChild(container.querySelector("[key='" + key + "']"));
@@ -186,14 +185,20 @@ var aRDom = function () {
         dragEnd: function () {
             movingElemOrder = parseInt(movingElem.style.order);
             newPlaceOrder = parseInt(newPlace.style.order);
-            newPlace.className = "mainNote";
             var orders = this.getOrders(notes);
-            var reordered = this.reorder(orders, movingElemOrder, newPlaceOrder);
+            newPlace.className = "mainNote";
+            var reordered = this.reorder(Array.from(orders), movingElemOrder, newPlaceOrder);
+            change = {
+                undo: "unDrag",
+                data: {
+                    array: notes.map(function (note){return Object.assign({},note)}),
+                }
+            }
+            model.addRegister(change);
             this.assignNewOrders(reordered);
             model.saveNotes(notes);
             newPlace.removeAttribute("ondragend");
             movingElem.removeAttribute("ondragend");
-            
         },
 
         reorder: function (arr, origin, dest) {
